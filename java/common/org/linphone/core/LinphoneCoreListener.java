@@ -101,14 +101,6 @@ public interface LinphoneCoreListener {
 	void textReceived(LinphoneCore lc, LinphoneChatRoom cr,LinphoneAddress from,String message);
 
 	/**
-	 * invoked when a new dtmf is received
-	 * @param lc 	LinphoneCore
-	 * @param call 	LinphoneCall involved in the dtmf sending
-	 * @param dtmf 	value of the dtmf sent
-	 */
-	void dtmfReceived(LinphoneCore lc, LinphoneCall call, int dtmf);
-	
-	/**
 	 * Invoked when echo cancalation calibration is completed
 	 * @param lc LinphoneCore
 	 * @param status 
