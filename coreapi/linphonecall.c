@@ -972,8 +972,7 @@ void linphone_call_init_media_streams(LinphoneCall *call){
 
 static int dtmf_tab[16]={'0','1','2','3','4','5','6','7','8','9','*','#','A','B','C','D'};
 
-static void linphone_core_dtmf_received(RtpSession* s, int dtmf, void* user_data){
-	LinphoneCore* lc = (LinphoneCore*)user_data;
+static void linphone_core_dtmf_received(LinphoneCore *lc, int dtmf){
 	if (dtmf<0 || dtmf>15){
 		ms_warning("Bad dtmf value %i",dtmf);
 		return;
@@ -1063,7 +1062,7 @@ static void post_configure_audio_streams(LinphoneCall*call){
 	if (lc->vtable.dtmf_received!=NULL){
 		/* replace by our default action*/
 		audio_stream_play_received_dtmfs(call->audiostream,FALSE);
-		rtp_session_signal_connect(call->audiostream->session,"telephone-event",(RtpCallback)linphone_core_dtmf_received,(unsigned long)lc);
+		/*rtp_session_signal_connect(call->audiostream->session,"telephone-event",(RtpCallback)linphone_core_dtmf_received,(unsigned long)lc);*/
 	}
 }
 
