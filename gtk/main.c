@@ -512,12 +512,7 @@ void linphone_gtk_about_response(GtkDialog *dialog, gint id){
 	}
 }
 
-static void about_url_clicked(GtkAboutDialog *dialog, const char *url, gpointer data){
-	g_message("About url clicked");
-	linphone_gtk_open_browser(url);
-}
-
-void linphone_gtk_show_about(void){
+void linphone_gtk_show_about(){
 	struct stat filestat;
 	const char *license_file=PACKAGE_DATA_DIR "/linphone/COPYING";
 	GtkWidget *about;
@@ -527,7 +522,6 @@ void linphone_gtk_show_about(void){
 	static const char *defcfg="defcfg";
 
 	about=linphone_gtk_create_window("about");
-	gtk_about_dialog_set_url_hook(about_url_clicked,NULL,NULL);
 	memset(&filestat,0,sizeof(filestat));
 	if (stat(license_file,&filestat)!=0){
 		license_file="COPYING";
@@ -581,7 +575,7 @@ static gboolean linphone_gtk_iterate(LinphoneCore *lc){
 		/*make sure we are not showing the login screen*/
 		GtkWidget *mw=linphone_gtk_get_main_window();
 		GtkWidget *login_frame=linphone_gtk_get_widget(mw,"login_frame");
-		if (!GTK_WIDGET_VISIBLE(login_frame)){
+		if (!gtk_widget_get_visible(login_frame)){
 			GtkWidget *uri_bar=linphone_gtk_get_widget(mw,"uribar");
 			gtk_entry_set_text(GTK_ENTRY(uri_bar),addr_to_call);
 			addr_to_call=NULL;
@@ -736,7 +730,7 @@ void on_contact_provider_search_results( LinphoneContactSearch* req, MSList* fri
 	}
 	gtk_entry_completion_complete(compl);
 	// save the number of LDAP results to better decide if new results should be fetched when search predicate gets bigger
-	gtk_object_set_data(GTK_OBJECT(uribar), "ldap_res_cout",
+	g_object_set_data(G_OBJECT(uribar), "ldap_res_cout",
 						GINT_TO_POINTER(
 							linphone_ldap_contact_search_result_count(search)
 							)
@@ -758,8 +752,8 @@ static gboolean launch_contact_provider_search(void *userdata)
 	LinphoneLDAPContactProvider* ldap = linphone_gtk_get_ldap();
 	GtkWidget*      uribar = GTK_WIDGET(userdata);
 	const gchar* predicate = gtk_entry_get_text(GTK_ENTRY(uribar));
-	gchar* previous_search = gtk_object_get_data(GTK_OBJECT(uribar), "previous_search");
-	unsigned int prev_res_count = GPOINTER_TO_INT(gtk_object_get_data(GTK_OBJECT(uribar), "ldap_res_cout"));
+	gchar* previous_search = g_object_get_data(G_OBJECT(uribar), "previous_search");
+	unsigned int prev_res_count = GPOINTER_TO_INT(g_object_get_data(G_OBJECT(uribar), "ldap_res_cout"));
 
 	if( ldap && strlen(predicate) >= 3 ){ // don't search too small predicates
 		unsigned int max_res_count = linphone_ldap_contact_provider_get_max_result(ldap);
@@ -775,7 +769,7 @@ static gboolean launch_contact_provider_search(void *userdata)
 
 		// save current search
 		if( previous_search ) ms_free(previous_search);
-		gtk_object_set_data(GTK_OBJECT(uribar), "previous_search", ms_strdup(predicate));
+		g_object_set_data(G_OBJECT(uribar), "previous_search", ms_strdup(predicate));
 
 		ms_message("launch_contact_provider_search");
 		search =linphone_contact_provider_begin_search(
@@ -793,7 +787,7 @@ void linphone_gtk_on_uribar_changed(GtkEditable *uribar, gpointer user_data)
 {
 	if( linphone_gtk_get_ldap() ) {
 		gchar* text = gtk_editable_get_chars(uribar, 0,-1);
-		gint timeout = GPOINTER_TO_INT(gtk_object_get_data(GTK_OBJECT(uribar), "complete_timeout"));
+		gint timeout = GPOINTER_TO_INT(g_object_get_data(G_OBJECT(uribar), "complete_timeout"));
 		if( text ) g_free(text);
 
 		if( timeout != 0 ) {
@@ -802,7 +796,7 @@ void linphone_gtk_on_uribar_changed(GtkEditable *uribar, gpointer user_data)
 
 		timeout = g_timeout_add_seconds(1,(GSourceFunc)launch_contact_provider_search, uribar);
 
-		gtk_object_set_data(GTK_OBJECT(uribar),"complete_timeout", GINT_TO_POINTER(timeout) );
+		g_object_set_data(G_OBJECT(uribar),"complete_timeout", GINT_TO_POINTER(timeout) );
 	}
 }
 
@@ -1023,7 +1017,7 @@ void linphone_gtk_enable_self_view(GtkWidget *w){
 
 void linphone_gtk_used_identity_changed(GtkWidget *w){
 	int active=gtk_combo_box_get_active(GTK_COMBO_BOX(w));
-	char *sel=gtk_combo_box_get_active_text(GTK_COMBO_BOX(w));
+	char *sel=gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(w));
 	if (sel && strlen(sel)>0){ //avoid a dummy "changed" at gui startup
 		linphone_core_set_default_proxy_index(linphone_gtk_get_core(),(active==0) ? -1 : (active-1));
 		linphone_gtk_show_directory_search();
@@ -1104,7 +1098,7 @@ static AuthTimeout * auth_timeout_new(GtkWidget *w){
 	/*so that the timeout no more references the widget when it is destroyed:*/
 	g_object_weak_ref(G_OBJECT(w),(GWeakNotify)auth_timeout_clean,tout);
 	/*so that the widget is automatically destroyed after some time */
-	g_timeout_add(30000,(GtkFunction)auth_timeout_destroy,tout);
+	g_timeout_add(30000,(GSourceFunc)auth_timeout_destroy,tout);
 	return tout;
 }
 
@@ -1137,7 +1131,7 @@ static void linphone_gtk_auth_info_requested(LinphoneCore *lc, const char *realm
 	gchar *msg;
 	GtkWidget *mw=linphone_gtk_get_main_window();
 
-	if (mw && GTK_WIDGET_VISIBLE(linphone_gtk_get_widget(mw,"login_frame"))){
+	if (mw && gtk_widget_get_visible(linphone_gtk_get_widget(mw,"login_frame"))){
 		/*don't prompt for authentication when login frame is visible*/
 		linphone_core_abort_authentication(lc,NULL);
 		return;
@@ -1569,7 +1563,7 @@ static void linphone_gtk_init_status_icon(){
 #endif
 	g_signal_connect_swapped(G_OBJECT(icon),"activate",(GCallback)handle_icon_click,NULL);
 	g_signal_connect(G_OBJECT(icon),"popup-menu",(GCallback)icon_popup_menu,NULL);
-	gtk_status_icon_set_tooltip(icon,title);
+	gtk_status_icon_set_tooltip_text(icon,title);
 	gtk_status_icon_set_visible(icon,TRUE);
 	g_object_set_data(G_OBJECT(icon),"menu",menu);
 	g_object_weak_ref(G_OBJECT(icon),(GWeakNotify)gtk_widget_destroy,menu);
@@ -2230,8 +2224,8 @@ core_start:
 	linphone_gtk_init_liblinphone(config_file, factory_config_file, db_file);
 
 	/* do not lower timeouts under 30 ms because it exhibits a bug on gtk+/win32, with cpu running 20% all the time...*/
-	gtk_timeout_add(30,(GtkFunction)linphone_gtk_iterate,(gpointer)linphone_gtk_get_core());
-	gtk_timeout_add(30,(GtkFunction)linphone_gtk_check_logs,(gpointer)linphone_gtk_get_core());
+	g_timeout_add(30,(GSourceFunc)linphone_gtk_iterate,(gpointer)linphone_gtk_get_core());
+	g_timeout_add(30,(GSourceFunc)linphone_gtk_check_logs,(gpointer)linphone_gtk_get_core());
 
 	gtk_main();
 	linphone_gtk_quit();
