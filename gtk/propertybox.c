@@ -417,7 +417,7 @@ void linphone_gtk_use_upnp_toggled(GtkWidget *w){
 }
 
 void linphone_gtk_mtu_changed(GtkWidget *w){
-	if (GTK_WIDGET_SENSITIVE(w))
+	if (gtk_widget_get_sensitive(w))
 		linphone_core_set_mtu(linphone_gtk_get_core(),gtk_spin_button_get_value(GTK_SPIN_BUTTON(w)));
 }
 

@@ -1063,8 +1063,8 @@ gint get_col_number_from_tree_view_column (GtkTreeViewColumn *col){
 	GList *cols;
 	gint   num;
 	g_return_val_if_fail ( col != NULL, -1 );
-	g_return_val_if_fail ( col->tree_view != NULL, -1 );
-	cols = gtk_tree_view_get_columns(GTK_TREE_VIEW(col->tree_view));
+	g_return_val_if_fail ( gtk_tree_view_column_get_tree_view(col) != NULL, -1 );
+	cols = gtk_tree_view_get_columns(GTK_TREE_VIEW(gtk_tree_view_column_get_tree_view(col)));
 	num = g_list_index(cols, (gpointer) col);
 	g_list_free(cols);
 
@@ -1085,11 +1085,11 @@ static gint tree_view_get_cell_from_pos(GtkTreeView *view, guint x, guint y){
 	if(path != NULL){
 		for (node = columns;  node != NULL && col == NULL;  node = node->next){
 			GtkTreeViewColumn *checkcol = (GtkTreeViewColumn*) node->data;
-			if (x >= colx  &&  x < (colx + checkcol->width)){
+			if (x >= colx  &&  x < (colx + gtk_tree_view_column_get_width(checkcol))){
 				col = checkcol;
 				return get_col_number_from_tree_view_column(col);
 			} else {
-				colx += checkcol->width;
+				colx += gtk_tree_view_column_get_width(checkcol);
 			}
 		}
 	}
