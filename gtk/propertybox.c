@@ -45,7 +45,7 @@ void linphone_gtk_fill_combo_box(GtkWidget *combo, const char **devices, const c
 		if ( cap==CAP_IGNORE
 			|| (cap==CAP_CAPTURE && linphone_core_sound_device_can_capture(linphone_gtk_get_core(),*p))
 			|| (cap==CAP_PLAYBACK && linphone_core_sound_device_can_playback(linphone_gtk_get_core(),*p)) ){
-			gtk_combo_box_append_text(GTK_COMBO_BOX(combo),*p);
+			gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(combo),*p);
 			if (selected && strcmp(selected,*p)==0) active=i;
 			i++;
 		}
@@ -179,7 +179,7 @@ void linphone_gtk_ldap_save(GtkWidget *button)
 	GtkEntry* entry;
 	GtkToggleButton* toggle;
 	GtkSpinButton* spin;
-	GtkComboBox* cbox;
+	GtkComboBoxText* cbox;
 
 	ms_message("SAVE LDAP");
 
@@ -205,8 +205,8 @@ void linphone_gtk_ldap_save(GtkWidget *button)
 	linphone_dictionary_set_string(dict, "sasl_realm", gtk_entry_get_text(entry));
 
 
-	cbox = GTK_COMBO_BOX(linphone_gtk_get_widget(ldap_widget,"ldap_auth_method"));
-	linphone_dictionary_set_string(dict, "auth_method", gtk_combo_box_get_active_text(cbox));
+	cbox = GTK_COMBO_BOX_TEXT(linphone_gtk_get_widget(ldap_widget,"ldap_auth_method"));
+	linphone_dictionary_set_string(dict, "auth_method", gtk_combo_box_text_get_active_text(cbox));
 
 	entry = GTK_ENTRY(linphone_gtk_get_widget(ldap_widget,"ldap_base_object"));
 	linphone_dictionary_set_string(dict, "base_object", gtk_entry_get_text(entry));
@@ -254,10 +254,10 @@ void linphone_gtk_fill_video_sizes(GtkWidget *combo){
 	/* glade creates a combo box without list model and text renderer,
 	unless we fill it with a dummy text.
 	This dummy text needs to be removed first*/
-	gtk_combo_box_remove_text(GTK_COMBO_BOX(combo),0);
+	gtk_combo_box_text_remove(GTK_COMBO_BOX_TEXT(combo),0);
 	for(i=0;def->name!=NULL;++def,++i){
 		snprintf(vsize_def,sizeof(vsize_def),"%s (%ix%i)",def->name,def->vsize.width,def->vsize.height);
-		gtk_combo_box_append_text(GTK_COMBO_BOX(combo),vsize_def);
+		gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(combo),vsize_def);
 		if (cur.width==def->vsize.width && cur.height==def->vsize.height) active=i;
 	}
 	gtk_combo_box_set_active(GTK_COMBO_BOX(combo),active);
@@ -438,19 +438,19 @@ void linphone_gtk_mtu_set(GtkWidget *w){
 }
 
 void linphone_gtk_playback_device_changed(GtkWidget *w){
-	gchar *sel=gtk_combo_box_get_active_text(GTK_COMBO_BOX(w));
+	gchar *sel=gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(w));
 	linphone_core_set_playback_device(linphone_gtk_get_core(),sel);
 	g_free(sel);
 }
 
 void linphone_gtk_capture_device_changed(GtkWidget *w){
-	gchar *sel=gtk_combo_box_get_active_text(GTK_COMBO_BOX(w));
+	gchar *sel=gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(w));
 	linphone_core_set_capture_device(linphone_gtk_get_core(),sel);
 	g_free(sel);
 }
 
 void linphone_gtk_ring_device_changed(GtkWidget *w){
-	gchar *sel=gtk_combo_box_get_active_text(GTK_COMBO_BOX(w));
+	gchar *sel=gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(w));
 	linphone_core_set_ringer_device(linphone_gtk_get_core(),sel);
 	g_free(sel);
 }
@@ -462,7 +462,7 @@ void linphone_gtk_alsa_special_device_changed(GtkWidget *w){
 }
 
 void linphone_gtk_cam_changed(GtkWidget *w){
-	gchar *sel=gtk_combo_box_get_active_text(GTK_COMBO_BOX(w));
+	gchar *sel=gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(w));
 	linphone_core_set_video_device(linphone_gtk_get_core(),sel);
 	g_free(sel);
 }
@@ -1140,13 +1140,13 @@ static void linphone_gtk_fill_langs(GtkWidget *pb){
 	/* glade creates a combo box without list model and text renderer,
 	unless we fill it with a dummy text.
 	This dummy text needs to be removed first*/
-	gtk_combo_box_remove_text(GTK_COMBO_BOX(combo),0);
+	gtk_combo_box_text_remove(GTK_COMBO_BOX_TEXT(combo),0);
 	while(sscanf(all_langs+i,"%s",code)==1){
 		i+=strlen(code);
 		while(all_langs[i]==' ') ++i;
 		name=lang_get_name(code);
 		snprintf(text,sizeof(text)-1,"%s : %s",code,name!=NULL ? _(name) : code);
-		gtk_combo_box_append_text(GTK_COMBO_BOX(combo),text);
+		gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(combo),text);
 		if (cur_lang_index==-1 && lang_equals(cur_lang,code))
 			cur_lang_index=index;
 		index++;
@@ -1154,8 +1154,8 @@ static void linphone_gtk_fill_langs(GtkWidget *pb){
 	gtk_combo_box_set_active(GTK_COMBO_BOX(combo),cur_lang_index);
 }
 
-void linphone_gtk_lang_changed(GtkComboBox *combo){
-	const char *selected=gtk_combo_box_get_active_text(combo);
+void linphone_gtk_lang_changed(GtkComboBoxText *combo){
+	const char *selected=gtk_combo_box_text_get_active_text(combo);
 	char code[10];
 	const char *cur_lang;
 	#if defined(WIN32) || defined(__APPLE__)
@@ -1211,7 +1211,7 @@ static void linphone_gtk_set_media_encryption_mandatory_sensitive(GtkWidget *pro
 }
 
 static void linphone_gtk_media_encryption_changed(GtkWidget *combo){
-	char *selected=gtk_combo_box_get_active_text(GTK_COMBO_BOX(combo));
+	char *selected=gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(combo));
 	LinphoneCore *lc=linphone_gtk_get_core();
 	GtkWidget *toplevel=gtk_widget_get_toplevel(combo);
 	if (selected!=NULL){

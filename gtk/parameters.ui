@@ -633,7 +633,7 @@
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkComboBox" id="media_encryption_combo">
+                              <object class="GtkComboBoxText" id="media_encryption_combo">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                                 <property name="active">0</property>
@@ -1099,7 +1099,7 @@
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkComboBox" id="capture_device">
+                              <object class="GtkComboBoxText" id="capture_device">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                                 <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
@@ -1121,7 +1121,7 @@
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkComboBox" id="ring_device">
+                              <object class="GtkComboBoxText" id="ring_device">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                                 <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
@@ -1197,7 +1197,7 @@
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkComboBox" id="playback_device">
+                              <object class="GtkComboBoxText" id="playback_device">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                                 <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
@@ -1282,7 +1282,7 @@
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkComboBox" id="webcams">
+                              <object class="GtkComboBoxText" id="webcams">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                                 <property name="model">model4</property>
@@ -1312,7 +1312,7 @@
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkComboBox" id="video_size">
+                              <object class="GtkComboBoxText" id="video_size">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                                 <property name="model">model5</property>
@@ -2467,7 +2467,7 @@
                         <property name="can_focus">False</property>
                         <property name="left_padding">12</property>
                         <child>
-                          <object class="GtkComboBox" id="lang_combo">
+                          <object class="GtkComboBoxText" id="lang_combo">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="model">model7</property>

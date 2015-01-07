@@ -305,7 +305,7 @@ LINPHONE_PUBLIC void linphone_gtk_codec_disable(GtkWidget *button);
 LINPHONE_PUBLIC void linphone_gtk_upload_bw_changed(GtkWidget *w);
 LINPHONE_PUBLIC void linphone_gtk_download_bw_changed(GtkWidget *w);
 LINPHONE_PUBLIC void linphone_gtk_adaptive_rate_control_toggled(GtkToggleButton *button);
-LINPHONE_PUBLIC void linphone_gtk_lang_changed(GtkComboBox *combo);
+LINPHONE_PUBLIC void linphone_gtk_lang_changed(GtkComboBoxText *combo);
 LINPHONE_PUBLIC void linphone_gtk_ui_level_toggled(GtkWidget *w);
 LINPHONE_PUBLIC void linphone_gtk_show_ldap_config(GtkWidget* button);
 LINPHONE_PUBLIC void linphone_gtk_parameters_closed(GtkWidget *button);

@@ -699,7 +699,7 @@ void linphone_gtk_in_call_view_show_encryption(LinphoneCall *call){
 		}
 		break;
 		default:
-			gtk_widget_hide_all(encryption_box);
+			gtk_widget_hide(encryption_box);
 	}
 }
 

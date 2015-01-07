@@ -1298,7 +1298,7 @@ static void linphone_gtk_global_state_changed(LinphoneCore *lc, LinphoneGlobalSt
 		case LinphoneGlobalOn:
 			linphone_gtk_init_ui();
 			if (selftest) {
-				gtk_timeout_add(300,(GtkFunction)gtk_main_quit,NULL);
+				g_timeout_add(300,(GSourceFunc)gtk_main_quit,NULL);
 			}
 		break;
 		default:

@@ -131,7 +131,7 @@ void linphone_gtk_uninit_audio_label(GtkWidget *w){
 }
 
 static void playback_device_changed(GtkWidget *w){
-	gchar *sel=gtk_combo_box_get_active_text(GTK_COMBO_BOX(w));
+	gchar *sel=gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(w));
 	linphone_core_set_playback_device(linphone_gtk_get_core(),sel);
 	g_free(sel);
 }
@@ -146,7 +146,7 @@ static void capture_device_changed(GtkWidget *capture_device){
 	mic_audiolevel = get_widget_from_assistant("mic_audiolevel");
 	label_audiolevel = get_widget_from_assistant("label_audiolevel");
 	audio_stream = (AudioStream *) g_object_get_data(G_OBJECT(assistant),"stream");
-	sel = gtk_combo_box_get_active_text(GTK_COMBO_BOX(capture_device));
+	sel = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(capture_device));
 	linphone_core_set_capture_device(linphone_gtk_get_core(),sel);
 	linphone_gtk_uninit_audio_meter(mic_audiolevel);
 	linphone_gtk_uninit_audio_label(label_audiolevel);
@@ -219,13 +219,13 @@ void linphone_gtk_start_record_sound(GtkWidget *w, gpointer data){
 				path,NULL,ms_snd_card_manager_get_card(manager,linphone_core_get_capture_device(lc)),FALSE);
 			g_object_set_data(G_OBJECT(audio_assistant),"record_stream",stream);
 		}
-		timeout_id = gtk_timeout_add(6000,(GtkFunction)linphone_gtk_stop_record,NULL);
+		timeout_id = g_timeout_add(6000,(GSourceFunc)linphone_gtk_stop_record,NULL);
 		g_object_set_data(G_OBJECT(audio_assistant),"timeout_id",GINT_TO_POINTER(timeout_id));
 		g_object_set_data(G_OBJECT(audio_assistant),"path",path);
 	} else {
 		stream = (AudioStream *)g_object_get_data(G_OBJECT(audio_assistant),"record_stream");
 		timeout_id = GPOINTER_TO_INT(g_object_get_data(G_OBJECT(audio_assistant),"timeout_id"));
-		gtk_timeout_remove(timeout_id);
+		g_source_remove(timeout_id);
 		if(stream != NULL){
 			audio_stream_stop(stream);
 			g_object_set_data(G_OBJECT(audio_assistant),"record_stream",NULL);
@@ -328,7 +328,7 @@ static GtkWidget *create_mic_page(){
 	GtkWidget *labelMicChoice=gtk_label_new(_("Capture device"));
 	GtkWidget *labelMicLevel=gtk_label_new(_("Recorded volume"));
 	GtkWidget *mic_audiolevel=gtk_progress_bar_new();
-	GtkWidget *capture_device=gtk_combo_box_new();
+	GtkWidget *capture_device=gtk_combo_box_text_new();
 	GtkWidget *box = gtk_vbox_new(FALSE,0);
 	GtkWidget *label_audiolevel=gtk_label_new(_("No voice"));
 	GtkWidget *mixer_button=gtk_button_new_with_label(_("System sound preferences"));
@@ -369,7 +369,7 @@ static GtkWidget *create_speaker_page(){
 	GtkWidget *labelSpeakerChoice=gtk_label_new(_("Playback device"));
 	GtkWidget *labelSpeakerLevel=gtk_label_new(_("Play three beeps"));
 	GtkWidget *spk_button=gtk_button_new_from_stock(GTK_STOCK_MEDIA_PLAY);
-	GtkWidget *playback_device=gtk_combo_box_new();
+	GtkWidget *playback_device=gtk_combo_box_text_new();
 	GtkWidget *mixer_button=gtk_button_new_with_label(_("System sound preferences"));
 	GtkWidget *image;
 	const char **sound_devices;
