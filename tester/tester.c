@@ -436,6 +436,7 @@ void liblinphone_tester_init(void) {
 	add_test_suite(&transport_test_suite);
 	add_test_suite(&player_test_suite);
 	add_test_suite(&dtmf_test_suite);
+	add_test_suite(&multicast_call_test_suite);
 }
 
 void liblinphone_tester_uninit(void) {

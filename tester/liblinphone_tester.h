@@ -63,6 +63,7 @@ extern test_suite_t transport_test_suite;
 extern test_suite_t player_test_suite;
 extern test_suite_t dtmf_test_suite;
 extern test_suite_t offeranswer_test_suite;
+extern test_suite_t multicast_call_test_suite;
 
 
 extern int liblinphone_tester_nb_test_suites(void);
@@ -311,7 +312,9 @@ LinphoneCore* configure_lc_from(LinphoneCoreVTable* v_table, const char* path, c
 void cunit_android_trace_handler(int level, const char *fmt, va_list args) ;
 #endif
 int  liblinphone_tester_fprintf(FILE * stream, const char * format, ...);
-
+void linphone_call_cb(LinphoneCall *call,void * user_data);
+void call_paused_resumed_base(bool_t multicast);
+void simple_call_base(bool_t enable_multicast_recv_side);
 void call_base(LinphoneMediaEncryption mode, bool_t enable_video,bool_t enable_relay,LinphoneFirewallPolicy policy,bool_t enable_tunnel);
 #endif /* LIBLINPHONE_TESTER_H_ */
 
